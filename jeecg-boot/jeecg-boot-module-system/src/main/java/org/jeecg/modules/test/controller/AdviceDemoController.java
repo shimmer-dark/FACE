@@ -72,12 +72,13 @@ public class AdviceDemoController {
 		result.setSuccess(true);
 		result.setResult(pageList);
 		return result;
+
 	}
 
 	@AutoLog(value = "测试2-分页列表查询")
 	@ApiOperation(value="测试2-分页列表查询", notes="测试2-分页列表查询")
 	@GetMapping(value = "/user-list")
-	@PermissionData(pageComponent="jeecg/AdviceDemoListU")
+	//@PermissionData(pageComponent="jeecg/AdviceDemoListU")
 	public Result<IPage<AdviceDemo>> queryPageList2(AdviceDemo adviceDemo,
 													@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 													@RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
