@@ -21,9 +21,11 @@ const user = {
       state.token = token
     },
     SET_NAME: (state, { username, realname, welcome }) => {
+      localStorage.setItem("username",username)
       state.username = username
       state.realname = realname
       state.welcome = welcome
+
     },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
@@ -137,6 +139,7 @@ const user = {
         let logoutToken = state.token;
         commit('SET_TOKEN', '')
         commit('SET_PERMISSIONLIST', [])
+        commit('SET_NAME', {})
         Vue.ls.remove(ACCESS_TOKEN)
         //console.log('logoutToken: '+ logoutToken)
         logout(logoutToken).then(() => {
