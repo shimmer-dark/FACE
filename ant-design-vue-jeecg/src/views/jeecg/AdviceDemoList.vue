@@ -63,20 +63,20 @@
           </a-col>
 
 <!--          <a-col :md="6" :sm="8">-->
-<!--            <a-form-item label="处理日期">-->
-<!--              <a-date-picker-->
-<!--                showTime-->
-<!--                format="YYYY-MM-DD HH:mm:ss"-->
-<!--                placeholder="请输入处理日期"-->
-<!--                v-model="queryParam.updateTime" style="width: 100%" />-->
-<!--            </a-form-item>-->
-<!--          </a-col>-->
+          <!--            <a-form-item label="处理日期">-->
+          <!--              <a-date-picker-->
+          <!--                showTime-->
+          <!--                format="YYYY-MM-DD HH:mm:ss"-->
+          <!--                placeholder="请输入处理日期"-->
+          <!--                v-model="queryParam.updateTime" style="width: 100%" />-->
+          <!--            </a-form-item>-->
+          <!--          </a-col>-->
 
-<!--          <a-col :md="6" :sm="8">-->
-<!--            <a-form-item label="处理结果">-->
-<!--              <a-input placeholder="请输入处理结果" v-model="queryParam.result"></a-input>-->
-<!--            </a-form-item>-->
-<!--          </a-col>-->
+          <!--          <a-col :md="6" :sm="8">-->
+          <!--            <a-form-item label="处理结果">-->
+          <!--              <a-input placeholder="请输入处理结果" v-model="queryParam.result"></a-input>-->
+          <!--            </a-form-item>-->
+          <!--          </a-col>-->
 
 
           </template>
@@ -321,6 +321,10 @@
             console.log('Clicked cancel button');
             this.visible = false
         },
+        modalFormOk2() {
+            // 新增/修改 成功时，重载列表
+            this.loadData();
+        }
     }
   }
 </script>
