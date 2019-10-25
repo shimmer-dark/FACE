@@ -6,11 +6,11 @@
       <a-form layout="inline">
         <a-row :gutter="24">
 
-          <a-col :md="6" :sm="8">
-            <a-form-item label="创建人id">
-              <a-input placeholder="请输入创建人id" v-model="queryParam.createBy"></a-input>
-            </a-form-item>
-          </a-col>
+<!--          <a-col :md="6" :sm="8">-->
+<!--            <a-form-item label="创建人id">-->
+<!--              <a-input placeholder="请输入创建人id" v-model="queryParam.createBy"></a-input>-->
+<!--            </a-form-item>-->
+<!--          </a-col>-->
           <a-col :md="6" :sm="8">
             <a-form-item label="申诉产品id">
               <a-input placeholder="请输入申诉产品id" v-model="queryParam.productId"></a-input>
@@ -273,7 +273,15 @@
   },
 
       created(){
+          if(!this.$store.state.user.username) {
+              this.$store.state.user.username=localStorage.username;
+              console.log("更新后用户名为："+this.$store.state.user.username);
+          };
+          this.loadData2();
           this.initDictConfig();
+      },
+      mounted(){
+
       },
   computed: {
     importExcelUrl: function(){
@@ -281,6 +289,31 @@
     }
   },
     methods: {
+        loadData2(arg) {
+            console.log("执行了loadData2");
+            if(!this.url.list){
+                this.$message.error("请设置url.list属性!")
+                return
+            }
+            //加载数据 若传入参数1则加载第一页的内容
+            if (arg === 1) {
+                this.ipagination.current = 1;
+            }
+            var params = this.getQueryParams();//查询条件
+            params.createBy=this.$store.state.user.username;
+            console.log("当前登录的用户名："+this.$store.state.user.username);
+            this.loading = true;
+            getAction(this.url.list, params).then((res) => {
+                if (res.success) {
+                    this.dataSource = res.result.records;
+                    this.ipagination.total = res.result.total;
+                }
+                if(res.code===510){
+                    this.$message.warning(res.message)
+                }
+                this.loading = false;
+            })
+        },
         initDictConfig() {
             //初始化字典 - 处理状态
             initDictOptions('deal_status').then((res) => {
@@ -289,8 +322,18 @@
                 }
             });
         },
+        handleTableChange(pagination, filters, sorter) {
+            //分页、排序、筛选变化时触发
+            //TODO 筛选
+            if (Object.keys(sorter).length > 0) {
+                this.isorter.column = sorter.field;
+                this.isorter.order = "ascend" == sorter.order ? "asc" : "desc"
+            }
+            this.ipagination = pagination;
+            this.loadData2();
+        },
         handleProcessed: function() {
-            var params ={processStatus:'1'};//查询条件
+            var params ={processStatus:'1',createBy:`${this.$store.state.user.username}`};//查询条件
             this.loading = true;
             getAction(this.url.list, params).then((res) => {
                 if (res.success) {
@@ -305,7 +348,7 @@
         },
 
         handleUntreated: function() {
-            var params ={processStatus:'0'};//查询条件
+            var params ={processStatus:'0',createBy:`${this.$store.state.user.username}`};//查询条件
             this.loading = true;
             getAction(this.url.list, params).then((res) => {
                 if (res.success) {
@@ -327,7 +370,13 @@
             // });
             this.$refs.modalForm2.detail(record);
         },
-
+        searchQuery() {
+            this.loadData2(1);
+        },
+        searchReset() {
+            this.queryParam = {}
+            this.loadData2(1);
+        },
         handleOk(e) {
             this.confirmLoading = true;
         },
@@ -335,6 +384,10 @@
             console.log('Clicked cancel button');
             this.visible = false
         },
+        modalFormOk2() {
+            // 新增/修改 成功时，重载列表
+            this.loadData();
+        }
     }
   }
 </script>
